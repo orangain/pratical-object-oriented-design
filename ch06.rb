@@ -52,6 +52,12 @@ class MountainBike < Bicycle
   end
 end
 
+class RecumbentBike < Bicycle
+  def default_chain
+    '9-speed'
+  end
+end
+
 road_bike = RoadBike.new(
   size: 'M',
   tape_color: 'red')
@@ -66,3 +72,5 @@ mountain_bike = MountainBike.new(
 
 puts mountain_bike.tire_size
 puts mountain_bike.chain
+
+bent = RecumbentBike.new
