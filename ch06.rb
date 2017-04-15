@@ -17,7 +17,11 @@ class Bicycle
     {
       tire_size: tire_size,
       chain: chain
-    }
+    }.merge(local_spares)
+  end
+
+  def local_spares
+    {}
   end
 
   def default_chain
@@ -36,8 +40,8 @@ class RoadBike < Bicycle
     @tape_color = args[:tape_color]
   end
 
-  def spares
-    super.merge({tape_color: tape_color})
+  def local_spares
+    {tape_color: tape_color}
   end
 
   def default_tire_size
@@ -54,8 +58,8 @@ class MountainBike < Bicycle
     @rear_shock = args[:rear_shock]
   end
 
-  def spares
-    super.merge(front_shock: front_shock, rear_shock: rear_shock)
+  def local_spares
+    {front_shock: front_shock, rear_shock: rear_shock}
   end
 
   def default_tire_size
@@ -71,8 +75,8 @@ class RecumbentBike < Bicycle
     @flag = args[:flag]
   end
 
-  def spares
-    super.merge({flag: flag})
+  def local_spares
+    {flag: flag}
   end
 
   def default_chain
