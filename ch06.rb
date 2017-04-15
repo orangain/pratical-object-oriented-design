@@ -51,3 +51,4 @@ mountain_bike = MountainBike.new(
   rear_shock: 'Fox')
 
 puts mountain_bike.size
+puts mountain_bike.spares
