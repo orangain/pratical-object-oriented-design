@@ -6,7 +6,7 @@ class Wheel
     @tire = tire
   end
 
-  def diameter
+  def width
     rim + (tire * 2)
   end
 end
@@ -46,6 +46,12 @@ end
 
 require 'minitest/autorun'
 
+module DiameterizableInterfaceTest
+  def test_implements_the_diameterizable_interface
+    assert_respond_to(@object, :width)
+  end
+end
+
 class DiameterDouble
   def diameter
     10
@@ -53,18 +59,15 @@ class DiameterDouble
 end
 
 class WheelTest < MiniTest::Test
+  include DiameterizableInterfaceTest
 
   def setup
-    @wheel = Wheel.new(26, 1.5)
-  end
-
-  def test_implements_the_diameterizable_interface
-    assert_respond_to(@wheel, :diameter)
+    @wheel = @object = Wheel.new(26, 1.5)
   end
 
   def test_calculates_diameter
     wheel = Wheel.new(26, 1.5)
-    assert_in_delta(29, wheel.diameter, 0.01)
+    assert_in_delta(29, wheel.width, 0.01)
   end
 end
 
