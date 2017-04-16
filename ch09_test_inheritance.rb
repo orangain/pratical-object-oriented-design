@@ -141,6 +141,14 @@ class StubbedBike < Bicycle
   end
 end
 
+class StubbedBikeTest < MiniTest::Test
+  include BicycleSubclassTest
+
+  def setup
+    @object = StubbedBike.new
+  end
+end
+
 class BicycleTest < MiniTest::Test
   include BicycleInterfaceTest
 
