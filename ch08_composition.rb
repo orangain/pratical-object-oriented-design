@@ -1,3 +1,5 @@
+require 'forwardable'
+
 class Bicycle
   attr_reader :size, :parts
 
@@ -12,14 +14,16 @@ class Bicycle
 end
 
 class Parts
-  attr_reader :parts
+  extend Forwardable
+  def_delegators :@parts, :size, :each
+  include Enumerable
 
   def initialize(parts)
     @parts = parts
   end
 
   def spares
-    parts.select{|part| part.needs_spare}
+    select{|part| part.needs_spare}
   end
 end
 
