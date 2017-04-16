@@ -12,11 +12,12 @@ class Wheel
 end
 
 class Gear
-  attr_reader :chainring, :cog, :wheel
+  attr_reader :chainring, :cog, :wheel, :observer
   def initialize(args)
     @chainring = args[:chainring]
     @cog = args[:cog]
     @wheel = args[:wheel]
+    @observer = args[:observer]
   end
 
   def gear_inches
@@ -27,9 +28,23 @@ class Gear
     chainring / cog.to_f
   end
 
+  def set_cog(new_cog)
+    @cog = new_cog
+    changed
+  end
+
+  def set_chainring(new_chainring)
+    @chainring = new_chainring
+    changed
+  end
+
+  def changed
+    observer.changed(chainring, cog)
+  end
+
 end
 
-require 'test/unit'
+require 'minitest/autorun'
 
 class DiameterDouble
   def diameter
@@ -37,7 +52,7 @@ class DiameterDouble
   end
 end
 
-class WheelTest < Test::Unit::TestCase
+class WheelTest < MiniTest::Test
 
   def setup
     @wheel = Wheel.new(26, 1.5)
@@ -53,10 +68,27 @@ class WheelTest < Test::Unit::TestCase
   end
 end
 
-class GearTest < Test::Unit::TestCase
+class GearTest < MiniTest::Test
+
+  def setup
+    @observer = MiniTest::Mock.new
+    @gear = Gear.new(chainring: 52, cog: 11, observer: @observer)
+  end
 
   def test_calculates_gear_inches
     gear = Gear.new(chainring: 52, cog: 11, wheel: DiameterDouble.new)
     assert_in_delta(47.27, gear.gear_inches, 0.01)
+  end
+
+  def test_notifies_observers_when_cogs_change
+    @observer.expect(:changed, true, [52, 27])
+    @gear.set_cog(27)
+    @observer.verify
+  end
+
+  def test_notifies_observers_when_chanrings_change
+    @observer.expect(:changed, true, [42, 11])
+    @gear.set_chainring(42)
+    @observer.verify
   end
 end
