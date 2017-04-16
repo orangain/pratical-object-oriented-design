@@ -1,4 +1,5 @@
 require 'forwardable'
+require 'ostruct'
 
 class Bicycle
   attr_reader :size, :parts
@@ -28,14 +29,18 @@ class Parts
 end
 
 module PartsFactory
-  def self.build(config, part_class=Part, parts_class=Parts)
+  def self.build(config, parts_class=Parts)
     parts_class.new(
       config.collect{|part_config|
-        part_class.new(
-          name: part_config[0],
-          description: part_config[1],
-          needs_spare: part_config.fetch(2, true))
+        create_part(part_config)
       })
+  end
+
+  def self.create_part(part_config)
+    OpenStruct.new(
+      name: part_config[0],
+      description: part_config[1],
+      needs_spare: part_config.fetch(2, true))
   end
 end
 
