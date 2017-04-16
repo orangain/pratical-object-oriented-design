@@ -12,16 +12,15 @@ class Wheel
 end
 
 class Gear
-  attr_reader :chainring, :cog, :rim, :tire
+  attr_reader :chainring, :cog, :wheel
   def initialize(args)
     @chainring = args[:chainring]
     @cog = args[:cog]
-    @rim = args[:rim]
-    @tire = args[:tire]
+    @wheel = args[:wheel]
   end
 
   def gear_inches
-    ratio * Wheel.new(rim, tire).diameter
+    ratio * wheel.diameter
   end
 
   def ratio
@@ -43,7 +42,7 @@ end
 class GearTest < Test::Unit::TestCase
 
   def test_calculates_gear_inches
-    gear = Gear.new(chainring: 52, cog: 11, rim: 26, tire: 1.5)
+    gear = Gear.new(chainring: 52, cog: 11, wheel: Wheel.new(26, 1.5))
     assert_in_delta(137.1, gear.gear_inches, 0.01)
   end
 end
