@@ -27,37 +27,43 @@ class Parts
   end
 end
 
-class Part
-  attr_reader :name, :description, :needs_spare
-
-  def initialize(args)
-    @name = args[:name]
-    @description = args[:description]
-    @needs_spare = args.fetch(:needs_spare, true)
+module PartsFactory
+  def self.build(config, part_class=Part, parts_class=Parts)
+    parts_class.new(
+      config.collect{|part_config|
+        part_class.new(
+          name: part_config[0],
+          description: part_config[1],
+          needs_spare: part_config.fetch(2, true))
+      })
   end
 end
 
-chain = Part.new(name: 'chain', description: '10-speed')
+road_config = [
+  ['chain', '10-speed'],
+  ['tire_size', '23'],
+  ['tape_color', 'red']]
 
-road_tire = Part.new(name: 'tire_size', description: '23')
+mountain_config = [
+  ['chain', '10-speed'],
+  ['tire_size', '2.1'],
+  ['front_shock', 'Manitou', false],
+  ['rear_shock', 'Fox']]
 
-tape = Part.new(name: 'tape_color', description: 'red')
+road_parts = PartsFactory.build(road_config)
+p road_parts
 
-mountain_tire = Part.new(name: 'tire_size', description: '2.1')
-
-rear_shock = Part.new(name: 'rear_shock', description: 'Fox')
-
-front_shock = Part.new(
-  name: 'front_shock', description: 'Manitou', needs_spare: false)
+mountain_parts = PartsFactory.build(mountain_config)
+p mountain_parts
 
 road_bike = Bicycle.new(
   size: 'L',
-  parts: Parts.new([chain, road_tire, tape]))
+  parts: road_parts)
 p road_bike.size
 p road_bike.spares
 
 mountain_bike = Bicycle.new(
   size: 'L',
-  parts: Parts.new([chain, mountain_tire, front_shock, rear_shock]))
+  parts: mountain_parts)
 p mountain_bike.size
 p mountain_bike.spares
