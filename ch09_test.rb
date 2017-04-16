@@ -21,7 +21,7 @@ class Gear
   end
 
   def gear_inches
-    ratio * wheel.diameter
+    ratio * wheel.width
   end
 
   def ratio
@@ -53,8 +53,16 @@ module DiameterizableInterfaceTest
 end
 
 class DiameterDouble
-  def diameter
+  def width
     10
+  end
+end
+
+class DiameterDoubleTest < MiniTest::Test
+  include DiameterizableInterfaceTest
+
+  def setup
+    @object = DiameterDouble.new
   end
 end
 
